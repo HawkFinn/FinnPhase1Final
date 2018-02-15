@@ -1,12 +1,22 @@
 package lobby;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
+import Activities.MainActivity;
+import Client_Server_Communication.Poller;
+import Models.Client;
 import Models.Game;
+import Models.Result;
 import Services.GuiFacade;
 
 
@@ -14,13 +24,21 @@ import Services.GuiFacade;
  * Created by krommend on 2/1/18.
  */
 
-public class LobbyPresentor implements ILobbyPresentor {
+public class LobbyPresentor implements ILobbyPresentor, Observer {
 
     GuiFacade guiFacade = new GuiFacade();
     ArrayList<String> players = new ArrayList<String>();
     boolean gameStarted;
     String p[] = {"p1", "p2", "p3", "p4", "p5"};
+    Context context;
 
+    public LobbyPresentor(Context c)
+    {
+        context = c;
+        Poller poller = new Poller();
+        poller.runLobbyCommands();
+        guiFacade.addObserver(this);
+    }
 
     @Override
     public Game joinGame(Context context, Game currentGame, String name) {
@@ -82,5 +100,31 @@ public class LobbyPresentor implements ILobbyPresentor {
     }
 
 
+    @Override
+    public void update(Observable o, Object result) {
+        MainActivity lobbyFragment= (MainActivity)((Activity)context);
+        if(result.equals("create"))
+        {
+            lobbyFragment.updateCreate(Client.getInstance().getActiveGame());
+
+        }
+        else if(result.equals("join"))
+        {
+            lobbyFragment.updateJoin(Client.getInstance().getActiveGame());
+        }
+        else if (result.equals("start"))
+        {
+            //start a game
+            MainActivity mainActivity = (MainActivity) context;
+            mainActivity.openGame();
+        }
+        else
+        {
+            Toast.makeText(context, (CharSequence) result, Toast.LENGTH_SHORT).show();
+        }
+//        Result newResult = (Result)result;
+  //      newResult.getErrorMsg();
+
+    }
 }
 

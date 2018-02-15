@@ -85,14 +85,16 @@ public class LoginRegisterPresentor implements ILoginRegisterPresentor, Observer
     @Override
     public void update(Observable o, Object authToken) {
 
-        if(authToken.equals("ERROR: Invalid Registration") || authToken.equals("ERROR: Incorrect username/password combination"))
-        {
+        if (authToken.equals("ERROR: Invalid Registration") || authToken.equals("ERROR: Incorrect username/password combination")) {
             Toast.makeText(context, (CharSequence) authToken, Toast.LENGTH_SHORT).show();
-        }
+        } else if (authToken == null)
+        {}
         else {
-            user.setAuthToken((String) authToken);
+            String a = (String)authToken;
+            user.setAuthToken(a);
             MainActivity mainActivity = (MainActivity) context;
             mainActivity.switchToLobby(user);
+            authToken=a;
         }
     }
 }

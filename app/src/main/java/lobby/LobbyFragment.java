@@ -42,8 +42,9 @@ public class LobbyFragment extends Fragment {
         return view;
     }*/
 
-    private GamesAdapter gamesAdapter;
+    public GamesAdapter gamesAdapter;
     private RecyclerView mGamesRecView;
+    public  Game createGame = new Game();
     TextView curName;
     TextView p1;
     TextView p2;
@@ -54,11 +55,13 @@ public class LobbyFragment extends Fragment {
     Button start;
     Button done;
     Button create;
-    LinearLayout newGame;
-    EditText gameName;
+    public LinearLayout newGame;
+    public EditText gameName;
     Game currentGame = null;
     ArrayList<Game> games = new ArrayList<>();
     TextView players[] = {p1, p2, p3, p4, p5};
+    public View view;
+    public boolean createUpdate= false;
     ArrayList<String> play;
     public LobbyFragment()
     {
@@ -66,7 +69,7 @@ public class LobbyFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.lobby_fragment, container, false);
+        view = inflater.inflate(R.layout.lobby_fragment, container, false);
         final ArrayList<String>playernames = new ArrayList<String>();
 
         final Bundle acceptedUser = getArguments();
@@ -81,7 +84,7 @@ public class LobbyFragment extends Fragment {
         p3 = (TextView) view.findViewById(R.id.p3);
         p4 = (TextView) view.findViewById(R.id.p4);
         p5 = (TextView) view.findViewById(R.id.p5);
-        final LobbyPresentor lobbyP = new LobbyPresentor();
+        final LobbyPresentor lobbyP = new LobbyPresentor(getActivity());
         final  TextView numPlayers = (TextView) view.findViewById(R.id.numPlayers);
         numPlayers.setVisibility(View.GONE);
         join= (Button) view.findViewById(R.id.join);
@@ -96,7 +99,13 @@ public class LobbyFragment extends Fragment {
 
         gamesAdapter = new GamesAdapter(games);
         mGamesRecView.setAdapter(gamesAdapter);
-
+        if(createUpdate == true)
+        {
+           newGame.setVisibility(View.GONE);
+           gameName.setText(null);
+           gamesAdapter.addGametoView(currentGame);
+           gamesAdapter.notifyDataSetChanged();
+        }
 
         //starting to add people
         p1.setText(acceptedUser.getString("username"));
@@ -122,12 +131,8 @@ public class LobbyFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (currentGame != null) {
-                    boolean start = lobbyP.startGame(getActivity(), currentGame);
-                    if (start) {
-                        FragmentManager headfrag = getActivity().getSupportFragmentManager();
-                        Fragment fragment = new GameFragment();
-                        headfrag.beginTransaction().replace(R.id.activity_main, fragment).commit();
-                    }
+                    lobbyP.startGame(getActivity(), currentGame);
+
                 }
                 else
                 {
@@ -162,7 +167,13 @@ public class LobbyFragment extends Fragment {
                 }
             }
         });
-
+        if(createUpdate == true)
+        {
+            newGame.setVisibility(View.GONE);
+            gameName.setText(null);
+            gamesAdapter.addGametoView(currentGame);
+            gamesAdapter.notifyDataSetChanged();
+        }
         return view;
     }
 
@@ -217,7 +228,7 @@ public class LobbyFragment extends Fragment {
     }
 
 
-   private class GamesAdapter extends RecyclerView.Adapter<GamesHolder> {
+   public class GamesAdapter extends RecyclerView.Adapter<GamesHolder> {
 
         private ArrayList<Game> games;
 

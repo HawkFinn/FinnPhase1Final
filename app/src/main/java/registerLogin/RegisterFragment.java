@@ -33,8 +33,6 @@ import lobby.LobbyFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Poller poller = new Poller();
-        poller.runLobbyCommands();
 
         l = new LoginRegisterPresentor(getContext());
         View view = inflater.inflate(R.layout.register_fragment, container, false);

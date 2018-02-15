@@ -3,6 +3,8 @@ package AsyncTasks;
 import android.os.AsyncTask;
 
 import Client_Server_Communication.ClientFacade;
+import Models.Client;
+import Models.Game;
 import Models.Request;
 import Models.Result;
 
@@ -21,5 +23,6 @@ public class JoinGameAsyncTask extends AsyncTask<Request, Void, Result> {
     @Override
     protected void onPostExecute(Result result){
         System.out.println("Joined a game - This is the asyncTask");
+        Game game = Client.getInstance().getGameMap().get(result.getGameId());
     }
 }

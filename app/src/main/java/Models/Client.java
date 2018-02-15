@@ -63,6 +63,23 @@ public class Client extends Observable {
         password=p;
     }
 
+    public void createGame ()
+    {
+        setChanged();
+        notifyObservers("create");
+    }
+
+    public void joinGame ()
+    {
+        setChanged();
+        notifyObservers("join");
+    }
+
+    public void startGame ()
+    {
+        setChanged();
+        notifyObservers("start");
+    }
 
     public Game getActiveGame()
     {
@@ -118,8 +135,10 @@ public class Client extends Observable {
         return gameMap;
     }
     public void setGameMap(HashMap<String, Game> gameMap) {
+
         this.gameMap = gameMap;
     }
+
     public ArrayList<Game> getGameList(){
         ArrayList<Game> returnList = new ArrayList<>();
         for(String i: this.gameMap.keySet()){
